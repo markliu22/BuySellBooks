@@ -13,6 +13,17 @@ router.get("/", async (req, res) => {
   res.send(allProducts);
 });
 
+// Handle GET request on /api/products/:id
+router.get("/:id", async (req, res) => {
+  const product = await Product.findOne({ _id: req.params.id });
+  // If product exists, res.send that product
+  if (product) {
+    res.send(product);
+  } else {
+    res.status(404).send({ message: "Product Not Found." });
+  }
+});
+
 // Handle POST request on /api/products/
 // router.post("/", isAuth, isAdmin, async (req, res) => {
 router.post("/", isAuth, async (req, res) => {
