@@ -5,7 +5,7 @@ import { getToken } from "../util";
 // get access to Router from express
 const router = express.Router();
 
-// Handle POST request on /api/user/signin
+// Handle POST request on /api/users/signin
 router.post("/signin", async (req, res) => {
   const signinUser = await User.findOne({
     email: req.body.email,
@@ -28,7 +28,33 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-// Handle GET request on /api/user/createadmin
+// Handle POST request on /api/users/register
+router.post("/register", async (req, res) => {
+  // Create a user based on data from req
+  const user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    password: req.body.password,
+  });
+  // Save newUser
+  const newUser = await user.save();
+  // if the newUser exist, send back the data about the user & token
+  if (newUser) {
+    res.send({
+      _id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      isAdmin: newUser.isAdmin,
+      token: getToken(newUser),
+    });
+  } else {
+    res.status(401).send({ msg: "Invalid User Data." });
+  }
+});
+
+// Handle GET request on /api/users/createadmin
 router.get("/createadmin", async (req, res) => {
   try {
     const user = new User({
