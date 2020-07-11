@@ -1,6 +1,6 @@
 // import express from "express";
 // import User from "../models/userModel";
-import { getToken } from "../util";
+import { getToken, isAuth } from "../util";
 const express = require("express");
 const User = require("../models/User");
 
@@ -55,6 +55,7 @@ router.post("/register", async (req, res) => {
   //   res.status(401).send({ msg: "Invalid User Data." });
   // }
   try {
+    // save user
     const newSavedUser = await user.save();
     res.send({
       _id: newSavedUser.id,
@@ -66,6 +67,36 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     res.json({ message: error });
+  }
+});
+
+// Handle PUT request on /api/users/idHere, requires authenticatoni
+router.put("/:id", isAuth, async (req, res) => {
+  // set userId to the id from request
+  const userId = req.params.id;
+  // Find user by the id, set the user to variable user
+  const user = await User.findById(userId);
+  // If user exists,
+  if (user) {
+    // Update name/email/phone/password if they are in the req.body, else, just set to what it already was
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
+    user.password = req.body.password || user.password;
+    // save user
+    const updatedUser = await user.save();
+    // res send updated info
+    res.send({
+      _id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      isAdmin: updatedUser.isAdmin,
+      token: getToken(updatedUser),
+      // ^ Also need to send back a token, which is an identifier which i can recognize if the next request is authenticated or not
+    });
+  } else {
+    res.status(404).send({ msg: "User Not Found" });
   }
 });
 
