@@ -1,5 +1,4 @@
 import express from "express";
-import dotenv from "dotenv";
 import config from "./config";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
@@ -7,8 +6,6 @@ import bodyParser from "body-parser";
 import userRoute from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
 import uploadRoute from "./routes/uploadRoute";
-
-dotenv.config();
 
 // Get access to mongodb url
 // const mongodbUrl = config.MONGODB_URL; Just Commented OUTTTTTTTTTTTTTTTTTTTTTTT
@@ -37,11 +34,11 @@ app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 
 // app.use("/uploads", express.static(path.join(__dirname, "/../uploads"))); //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// app.use(express.static(path.join(__dirname, '/../frontend/build')));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
-// });
+app.use(express.static(path.join(__dirname, '/../frontend/build')));
+app.get('*', (req, res) => res.sendFile(path.join('${__dirname}/../frontend/build/index.html'));
+app.listen(config.PORT, …)
 
-app.listen(5000, () => {
+///////////////////// Changed 5000 to config.PORT
+app.listen(config.PORT, () => {
   console.log("Server is running at port 5000");
 });
