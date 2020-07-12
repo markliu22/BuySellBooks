@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 
 import userRoute from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
+import uploadRoute from "./routes/uploadRoute";
 
 dotenv.config();
 
@@ -31,8 +32,15 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use("/api/uploadRoute", uploadRoute);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
+
+// app.use("/uploads", express.static(path.join(__dirname, "/../uploads"))); //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// app.use(express.static(path.join(__dirname, '/../frontend/build')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
+// });
 
 app.listen(5000, () => {
   console.log("Server is running at port 5000");
