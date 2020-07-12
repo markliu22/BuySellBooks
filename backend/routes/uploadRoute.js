@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}.png`); // First parameter of callback is null, second is the name of the file, we using the current timestamp
+    cb(null, `${Date.now()}.jpg`); // First parameter of callback is null, second is the name of the file, we using the current timestamp
   },
 });
 
@@ -23,4 +23,5 @@ const router = express.Router();
 router.post("/", upload.single("image"), (req, res) => {
   res.send(`/${req.file.path}`);
 });
+
 export default router;

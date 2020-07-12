@@ -30,11 +30,11 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use("/api/uploadRoute", uploadRoute);
+app.use("/api/uploads", uploadRoute);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 
-// app.use("/uploads", express.static(path.join(__dirname, "/../uploads"))); //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.use("/uploads", express.static(path.join(__dirname, "/../uploads"))); //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.use(express.static(path.join(__dirname, "/../frontend/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
