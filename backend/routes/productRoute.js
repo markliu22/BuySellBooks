@@ -8,10 +8,38 @@ const Product = require("../models/Product");
 const router = express.Router();
 
 // Handle GET request on /api/products/
+// router.get("/", async (req, res) => {
+//   const allProducts = await Product.find({});
+//   // const products = await Product.find({ ...searchKeyword }).sort(sortOrder); //////////////////////////////////////////////////////////
+//   res.send(allProducts);
+//   // res.send(products);
+// });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 router.get("/", async (req, res) => {
-  const allProducts = await Product.find({});
-  res.send(allProducts);
-});
+  // const category = req.query.category ? { category: req.query.category } : {}; // If req.query.category exists, set category to it, else jsut use an empty object
+  const category = { category: "textbooks" }; //  <<< CAN DO IT LIKE THE WAY ABOVE OR CAN ALSO DO IT THIS WAY (bc the only category is textbooks, all posting will have the category 'textbooks')
+  const searchKeyword = req.query.searchKeyword
+    ? // If req.query.searchKeyword exists
+      {
+        name: {
+          $regex: req.query.searchKeyword,
+          $options: "i",
+        },
+      }
+    : {};
+  // Check if req.query.sortOrder exists, if so, check if it's by lowest, if so the sortOrder is going to be based on price and -1, else going to be based on price and 1, if req.query.sortOrder does not exists, going to be based on _id and -1
+  const sortOrder = req.query.sortOrder
+    ? req.query.sortOrder === "lowest"
+      ? { price: -1 }
+      : { price: 1 }
+    : { _id: -1 };
+  // Pass in orderOrder for sort. Deconstruct category and searchKeyword
+  const products = await Product.find({ ...category, ...searchKeyword }).sort(
+    sortOrder
+  );
+  res.send(products);
+}); /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Handle GET request on /api/products/:id
 router.get("/:id", async (req, res) => {
@@ -39,6 +67,7 @@ router.post("/", isAuth, async (req, res) => {
   });
   // Save newSavedProduct
   const newSavedProduct = await product.save();
+  console.log(newSavedProduct.category);
   //if product exists, that means it's created correctly, send back data
   if (newSavedProduct) {
     return res
