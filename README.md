@@ -4,4 +4,4 @@ Fully functional online marketplace for students to buy and sell used textbooks 
 
 # Demo:
 
-<a href="https://imgflip.com/gif/4892tf"><img src="https://imgflip.com/embed/4892tf" title="BuySellBooks Demo Video"/></a>
+![48922x](https://user-images.githubusercontent.com/59205299/87461411-6bc87e00-c5dc-11ea-819e-fda34afb0bce.gif)
