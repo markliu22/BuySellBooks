@@ -1,5 +1,3 @@
-// import express from "express";
-// import User from "../models/userModel";
 import { isAuth, isAdmin, getToken } from "../util";
 const express = require("express");
 const Product = require("../models/Product");
@@ -10,19 +8,21 @@ const router = express.Router();
 // Handle GET request on /api/products/
 // router.get("/", async (req, res) => {
 //   const allProducts = await Product.find({});
-//   // const products = await Product.find({ ...searchKeyword }).sort(sortOrder); //////////////////////////////////////////////////////////
+//   // const products = await Product.find({ ...searchKeyword }).sort(sortOrder);
 //   res.send(allProducts);
 //   // res.send(products);
 // });
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Handle GET request on /api/products/
 router.get("/", async (req, res) => {
   // const category = req.query.category ? { category: req.query.category } : {}; // If req.query.category exists, set category to it, else jsut use an empty object
   const category = { category: "textbooks" }; //  <<< CAN DO IT LIKE THE WAY ABOVE OR CAN ALSO DO IT THIS WAY (bc the only category is textbooks, all posting will have the category 'textbooks')
   const searchKeyword = req.query.searchKeyword
-    ? // If req.query.searchKeyword exists
+    ? // If req.query.searchKeyword exists, else just empty object
       {
         name: {
+          // $regex provides regular expression capabilities for pattern matching string in queries. SYNTAX: { <field>: { $regex: /pattern/, $options: '<options>' } }
+          // $options: "i" means case insensitivity to match upper and lower cases
           $regex: req.query.searchKeyword,
           $options: "i",
         },
@@ -39,10 +39,11 @@ router.get("/", async (req, res) => {
     sortOrder
   );
   res.send(products);
-}); /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+});
 
 // Handle GET request on /api/products/:id
 router.get("/:id", async (req, res) => {
+  // Find product based on id from req
   const product = await Product.findOne({ _id: req.params.id });
   // If product exists, res.send that product
   if (product) {
@@ -53,7 +54,6 @@ router.get("/:id", async (req, res) => {
 });
 
 // Handle POST request on /api/products/
-// router.post("/", isAuth, isAdmin, async (req, res) => {
 router.post("/", isAuth, async (req, res) => {
   // Create product based on data from req
   const product = Product({
@@ -67,7 +67,7 @@ router.post("/", isAuth, async (req, res) => {
   });
   // Save newSavedProduct
   const newSavedProduct = await product.save();
-  console.log(newSavedProduct.category);
+  // console.log(newSavedProduct.category);
   //if product exists, that means it's created correctly, send back data
   if (newSavedProduct) {
     return res
@@ -78,8 +78,8 @@ router.post("/", isAuth, async (req, res) => {
 });
 
 // Handle PUT request on /api/products/idHere
-// router.put("/:id", isAuth, isAdmin, async (req, res) => {
 router.put("/:id", isAuth, async (req, res) => {
+  // set productId to id from req
   const productId = req.params.id;
   // Find product by its id (from request)
   const product = await Product.findById(productId);
@@ -104,7 +104,6 @@ router.put("/:id", isAuth, async (req, res) => {
 });
 
 // Handle DELETE request on /api/products/idHere
-// router.delete("/:id", isAuth, isAdmin, async (req, res) => {
 router.delete("/:id", isAuth, async (req, res) => {
   // Find product by id (from req)
   const deletedProduct = await Product.findById(req.params.id);

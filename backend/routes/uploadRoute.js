@@ -7,8 +7,8 @@ import multerS3 from "multer-s3";
 import aws from "aws-sdk";
 import config from "../config";
 
-// create disk storage with Date.now().jpg as filename
-// Created a folder called uploads, uploaded files will go there
+// https://code.tutsplus.com/tutorials/file-upload-with-multer-in-node--cms-32088
+// Set storage location for the files. Multer gives the option of storing files to disk
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, "uploads/");
@@ -18,13 +18,14 @@ const storage = multer.diskStorage({
   },
 });
 
-// Set upload as multer({ storage })
+// Set upload as multer({ storage }). This is also a part of the previous step
 const upload = multer({ storage });
 
 const router = express.Router();
 
+// Handle POST request on /uploads
 // Need to define a post method to get a file and save it on the computer
-// Need to use the upload middleware, single means only upload 1 file.
+// Need to use the .single() middleware, which means only upload 1 file
 router.post("/", upload.single("image"), (req, res) => {
   res.send(`/${req.file.path}`);
 });
@@ -50,7 +51,7 @@ const storageS3 = multerS3({
 const uploadS3 = multer({ storage: storageS3 });
 
 // Handle POST request on /api/uploads/s3
-// Use the same "single" middleware as with the local uploads, pass name of file which is 'image'
+// Use the same .single() middleware as with the local uploads, pass name of file which is 'image'
 router.post("/s3", uploadS3.single("image"), (req, res) => {
   // Send location of file on the AWS S3 server
   res.send(req.file.location);

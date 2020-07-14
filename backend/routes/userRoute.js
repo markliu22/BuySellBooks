@@ -9,6 +9,7 @@ const router = express.Router();
 
 // Handle POST request on /api/users/signin
 router.post("/signin", async (req, res) => {
+  // Find user based on email and password from req
   const signinUser = await User.findOne({
     email: req.body.email,
     password: req.body.password,
@@ -39,24 +40,10 @@ router.post("/register", async (req, res) => {
     phone: req.body.phone,
     password: req.body.password,
   });
-  // Save newUser
-  // const newUser = await user.save();
-  // // if the newUser exist, send back the data about the user & token
-  // if (newUser) {
-  //   res.send({
-  //     _id: newUser.id,
-  //     name: newUser.name,
-  //     email: newUser.email,
-  //     phone: newUser.phone,
-  //     isAdmin: newUser.isAdmin,
-  //     token: getToken(newUser),
-  //   });
-  // } else {
-  //   res.status(401).send({ msg: "Invalid User Data." });
-  // }
   try {
     // save user
     const newSavedUser = await user.save();
+    // Send back data
     res.send({
       _id: newSavedUser.id,
       name: newSavedUser.name,
@@ -64,6 +51,7 @@ router.post("/register", async (req, res) => {
       phone: newSavedUser.phone,
       isAdmin: newSavedUser.isAdmin,
       token: getToken(newSavedUser),
+      // ^ Also need to send back a token, use getToken function from util.js. Is an identifier which i can recognize if the next request is authenticated or not
     });
   } catch (error) {
     res.json({ message: error });

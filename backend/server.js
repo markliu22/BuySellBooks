@@ -15,8 +15,9 @@ import uploadRoute from "./routes/uploadRoute";
 //   useUnifiedTopology: true,
 //   useCreateIndex: true,
 // });
+// ^did NOT work, method below DOES work
 
-// Just addeddddddddddddddddddddddddddddddddd
+// Connect to database
 mongoose.connect(
   // Step 2
   process.env.MONGODB_URL || process.env.DB_CONNECTION,
@@ -30,17 +31,19 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// Inside uploadRoute.js, the '/' is the same as '/api/uploads'. It's always going to be the same as the first parameter
 app.use("/api/uploads", uploadRoute);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 
-app.use("/uploads", express.static(path.join(__dirname, "/../uploads"))); //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// For production:
+app.use("/uploads", express.static(path.join(__dirname, "/../uploads"))); //////////////
 app.use(express.static(path.join(__dirname, "/../frontend/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
 });
 
-///////////////////// Changed 5000 to config.PORT
+// listen on the PORT from config
 app.listen(config.PORT, () => {
-  console.log("Server is running at port 5000");
+  console.log(`Server is running on port ${config.PORT}`);
 });

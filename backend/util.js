@@ -15,7 +15,7 @@ const getToken = (user) => {
   );
 };
 
-// isAuth and isAdmin will check the token.
+// isAuth and isAdmin functions will check the token
 const isAuth = (req, res, next) => {
   // Get the token from req.headers.authorization
   const token = req.headers.authorization;
@@ -42,9 +42,9 @@ const isAuth = (req, res, next) => {
   }
 };
 
-// isAuth and isAdmin will check the token.
+// isAuth and isAdmin funtions will check the token
 const isAdmin = (req, res, next) => {
-  console.log(req.user);
+  // console.log(req.user);
   if (req.user && req.user.isAdmin) {
     return next();
   }
