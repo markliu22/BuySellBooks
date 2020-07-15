@@ -8,10 +8,14 @@ Fully functional online marketplace for students to buy and sell used textbooks 
 
 # Quick Start
 
-[//]: # "Install dependencies"
+> Install all the dependencies:
 
 npm install
 
 Rename Example_env.txt to .env
 
 Change lines 1, 3, and 4 with your mongodb url, AWS access key, and AWS secret access key
+
+> Concurrently run the server and the frontend:
+
+npm run dev
