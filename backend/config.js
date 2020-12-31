@@ -1,4 +1,4 @@
-// config files should be limited to just cimple key=value format
+// config files should be limited to key:value format
 import dotenv from "dotenv";
 
 dotenv.config();

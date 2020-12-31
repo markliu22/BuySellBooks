@@ -36,9 +36,9 @@ const isAuth = (req, res, next) => {
       return;
     });
   }
-  // If token does not exist
+  // Token does not exist:
   else {
-    return res.status(401).send({ msg: "Token is not supplied." });
+    return res.status(401).send({ msg: "Token not supplied." });
   }
 };
 
@@ -48,7 +48,7 @@ const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     return next();
   }
-  return res.status(401).send({ msg: "Admin Token is not valid." });
+  return res.status(401).send({ msg: "Admin Token not valid." });
 };
 
 export { getToken, isAuth, isAdmin };
