@@ -4,31 +4,23 @@ import { addToSaved, removeFromSaved } from "../actions/savedActions";
 import { Link } from "react-router-dom";
 
 function SavedScreen(props) {
-  // We are taking the saved key from the initial state in the store
-  const saved = useSelector((state) => state.saved);
-
-  // destructuring savedItems from saved
-  const { savedItems } = saved;
-
-  // Get the productId from props
+  const saved = useSelector((state) => state.saved); // Get saved from state
+  const { savedItems } = saved; // Get savedItems from saved
   const productId = props.match.params.id;
-
   const dispatch = useDispatch();
-
-  // Function removeFromSavedHandler, takes productId as parameter, calls removeFromSaved ACTION from savedActions.js, passes productId as parameter
   const removeFromSavedHandler = (productId) => {
-    // dispatch the removeFromSaved action, pass the productId as parameter
-    dispatch(removeFromSaved(productId));
+    dispatch(removeFromSaved(productId)); // dispatch action
   };
 
-  // useEffect is like componentDidMount. It tells React that your component needs to do something after render
+  // useEffect like componentDidMount
   useEffect(() => {
     // If productId exists
     if (productId) {
-      // dispatch the addToSaved action, pass the productId as parameter
+      // dispatch action
       dispatch(addToSaved(productId));
     }
-  }, []); // 'input' is an empty array which means the above code will only run at componentDidMount (when all the stuff rendered)
+  }, []); // input is empty so above will only run at componentDidMount
+
   return (
     <div className="saved">
       <div className="saved-list">

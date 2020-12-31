@@ -2,38 +2,28 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { detailsProduct } from "../actions/productActions";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Need to npm i those 3 things and have to include these 2 things in order to use font awesome icons
-import {
-  faHeart, // heart icon
-} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 function ProductScreen(props) {
-  // Get productDetails from the state
-  const productDetails = useSelector((state) => state.productDetails);
-  // Get products, loading, and error from productDetails
-  const { product, loading, error } = productDetails;
-  // To dispatch an action
+  const productDetails = useSelector((state) => state.productDetails); // Get productDetails from the state
+  const { product, loading, error } = productDetails; // Get products, loading, and error from productDetails
   const dispatch = useDispatch();
 
-  // useEffect is like componentDidMount. It tells React that your component needs to do something after render
+  // useEffect like componentDidMount. Needs to execute after render
   useEffect(() => {
     // dispatch the detailsProduct action
     dispatch(detailsProduct(props.match.params.id));
-    return () => {
-      //
-    };
-  }, []); // 'input' is an empty array which means the above code will only run at componentDidMount (when all the stuff rendered)
+    return () => {};
+  }, []); // input is empty so above only runs at componentDidMount
 
-  // Funtion to handle add to saved, redirects user their saved postings
   const handleAddToSaved = () => {
-    props.history.push("/saved/" + props.match.params.id);
+    props.history.push("/saved/" + props.match.params.id); // Redirect user
   };
 
   return (
     <div>
       <div className="back-to-home">
-        {/* Link back to homepage */}
         <Link to="/">Back to Home Page</Link>
       </div>
       {loading ? (
@@ -57,7 +47,6 @@ function ProductScreen(props) {
               src={product.image}
               alt="product"
             ></img>
-
             <h1>Contact the Seller:</h1>
             <h3>Seller's Phone: {product.sellerPhone}</h3>
             <h3>Seller's Email: {product.sellerEmail}</h3>

@@ -8,18 +8,8 @@ import userRoute from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
 import uploadRoute from "./routes/uploadRoute";
 
-// Get access to mongodb url
-// const mongodbUrl = config.MONGODB_URL; Just Commented OUTTTTTTTTTTTTTTTTTTTTTTT
-// mongoose.connect("mongodb://localhost/MyCluster1", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useCreateIndex: true,
-// });
-// ^did NOT work, method below DOES work
-
 // Connect to database
 mongoose.connect(
-  // Step 2
   process.env.MONGODB_URL || process.env.DB_CONNECTION,
   { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
   () => {

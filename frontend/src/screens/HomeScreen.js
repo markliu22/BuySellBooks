@@ -4,41 +4,28 @@ import { useSelector, useDispatch } from "react-redux";
 import { listProducts } from "../actions/productActions";
 
 function HomeScreen(props) {
-  // The useState React HOOK Returns a stateful value, and a function to update it
-  // SYNTAX: const [state, setState] = useState(initialState);
+  // const [state, setState] = useState(initialState);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const category = "textbooks"; // Can set category to 'textbooks' since for now, that is the only category
-
-  // Get productList from the state
-  const productList = useSelector((state) => state.productList);
-  // Get products, loading, and error from productList
-  const { products, loading, error } = productList;
-  // To dispatch an action
+  const category = "textbooks";
+  const productList = useSelector((state) => state.productList); // Get productList from the state
+  const { products, loading, error } = productList; // Get products, loading, and error from productList
   const dispatch = useDispatch();
 
-  // useEffect is like componentDidMount. It tells React that your component needs to do something after render
+  // useEffect like componentDidMount. Needs to execute after render
   useEffect(() => {
-    // dispatch the listProducts action, pass in category
-    dispatch(listProducts(category));
-    // dispatch(listProducts());
-    return () => {
-      //
-    };
-  }, [category]); // 'input' is category which means the above code will run again when category changes
+    dispatch(listProducts(category)); // dispatch action
+    return () => {};
+  }, [category]); // above runs when category changes
 
-  // submitHandler function
   const submitHandler = (e) => {
-    e.preventDefault(); // We don't want to refresh
-    // dispatch the listProducts action, pass in category, searchKeyword, and sortOrder
-    dispatch(listProducts(category, searchKeyword, sortOrder));
-    // dispatch(listProducts()); < what is used to be before adding category, searchKeyword, and sortOrder
+    e.preventDefault(); // Don't refresh
+    dispatch(listProducts(category, searchKeyword, sortOrder)); // dispatch action
   };
 
   const sortHandler = (e) => {
     setSortOrder(e.target.value);
-    // dispatch the listProducts action, pass in category, searchKeyword, and sortOrder
-    dispatch(listProducts(category, searchKeyword, sortOrder));
+    dispatch(listProducts(category, searchKeyword, sortOrder)); // dispatch action
   };
 
   // Need to check if loading, then check if error bc of the "Can't read map of undefined" error
@@ -70,11 +57,10 @@ function HomeScreen(props) {
       ) : (
         <ul className="products">
           {
-            // map through products (that we got from destructuring, each is going to be jsx)
+            // Display products
             products.map((product) => (
               <li key={product._id}>
                 <div className="product">
-                  {/* img is a Link to /product/iDhere */}
                   <Link to={"/product/" + product._id}>
                     <img
                       className="product-image"
@@ -82,11 +68,9 @@ function HomeScreen(props) {
                       alt="product"
                     ></img>
                   </Link>
-
                   <div className="product-name">
                     <Link to={"/product/" + product._id}>{product.name}</Link>
                   </div>
-
                   <div className="product-brand">{product.brand}</div>
                   <div className="product-price">${product.price}</div>
                 </div>

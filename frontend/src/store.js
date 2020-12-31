@@ -13,22 +13,16 @@ import {
   userRegisterReducer,
   userUpdateReducer,
 } from "./reducers/userReducers";
+const savedItems = Cookie.getJSON("savedItems") || []; // Set to 'savedItems' cookie, or [] if it does not exist
+const userInfo = Cookie.getJSON("userInfo") || null; // Set to 'userInfo' cookie, or null if it does not exist
 
-// read the cookie named 'savedItems', set to savedItems variable
-// If it does not exists, just set savedItems to empty array []
-const savedItems = Cookie.getJSON("savedItems") || [];
-
-// userInfo based on the data that we get from user
-// If it does not exists, just set userInfo to null
-const userInfo = Cookie.getJSON("userInfo") || null;
-
-// Create initialState based on the item that comes from the Cookie
+// Set initial state of app based on cookies
 const initialState = {
   saved: { savedItems },
   userSignin: { userInfo },
 };
 
-// Reducer is just a function that describes how an action transforms the state into the next state
+// Combine all reducers
 const reducer = combineReducers({
   productList: productListReducer,
   productDetails: productDetailsReducer,
@@ -40,11 +34,10 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
 });
 
-// Need this to use the redux chrome extension:
+// ** Need this to use the redux chrome extension:
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// Create store, pass in reducer (from combineReducers), initialState, and thunk middleware
-// Thunk is a middleware for redux and allow async actions
+// Create store, reducer for update logic. thunk middleware allows async actions
 const store = createStore(
   reducer,
   initialState,

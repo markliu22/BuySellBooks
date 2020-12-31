@@ -1,57 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { logout, update } from "../actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 
 function ProfileScreen(props) {
-  // The useState React HOOK Returns a stateful value, and a function to update it
-  // SYNTAX: const [state, setState] = useState(initialState);
+  // const [state, setState] = useState(initialState);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const dispatch = useDispatch();
-
-  // Take userSignin from the initial state of the store
-  const userSignin = useSelector((state) => state.userSignin);
-  // Get userInfo from userSisgnin
-  const { userInfo } = userSignin;
-
-  // Function for logging out
+  const userSignin = useSelector((state) => state.userSignin); // Get userSignin from state
+  const { userInfo } = userSignin; // Get userInfo from userSisgnin
   const handleLogout = () => {
-    // dispatch the logout action
-    dispatch(logout());
-    // Redirect to sign in screen
-    props.history.push("/signin");
+    dispatch(logout()); // dispatch action
+    props.history.push("/signin"); // redirect user
   };
-
-  // Function for submitting an update
   const submitHandler = (e) => {
-    e.preventDefault(); // Do not want to refresh the screen
-    // Dispatch the update action, pass in userId, name, email, phone, and password
-    dispatch(update({ userId: userInfo._id, name, email, phone, password }));
+    e.preventDefault(); // don't refresh
+    dispatch(update({ userId: userInfo._id, name, email, phone, password })); // dispatch action
   };
+  const userUpdate = useSelector((state) => state.userUpdate); // Get userUpdate from state
+  const { loading, success, error } = userUpdate; // Getting loading, success, and error from userUpdate
 
-  // Getting userUpdate from the initial state of the store
-  const userUpdate = useSelector((state) => state.userUpdate);
-  // Getting loading, success, and error from userUpdate
-  const { loading, success, error } = userUpdate;
-
-  // const myOrderList = useSelector((state) => state.myOrderList);
-  // const { loading: loadingOrders, orders, error: errorOrders } = myOrderList;
   useEffect(() => {
-    // IF userInfo exists
     if (userInfo) {
-      // Set name, email, phone, password
+      // Set info
       console.log(userInfo.name);
       setName(userInfo.name);
       setEmail(userInfo.email);
       setPhone(userInfo.phone);
       setPassword(userInfo.password);
     }
-    // dispatch(listMyOrders());
     return () => {};
-  }, [userInfo]); // Anytime userInfo changes, the above lines of code will re run
+  }, [userInfo]); // Change in userInfo reruns above
 
   return (
     <div className="profile">

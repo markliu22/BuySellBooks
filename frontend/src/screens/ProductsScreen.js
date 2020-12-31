@@ -9,24 +9,10 @@ import {
   deleteProduct,
 } from "../actions/productActions";
 
-// import Cookie from "js-cookie"; // Not as good method of getting userInfo
-// const userInfo = Cookie.getJSON("userInfo"); // Not as good method of getting userInfo
-// if (userInfo) {
-//   console.log(userInfo);
-//   console.log(userInfo.phone);
-// } // New way of getting userInfo is better. Gett the userInfo from userSignin
-
 function ProductsScreen(props) {
-  // You can add state to a component by calling React’s useState Hook
-  // Calling useState does two things:
-  // it creates a “state variable” with an initial value—in this case the state variable is isHungry and its initial value is true
-  // it creates a function to set that state variable’s value—setIsHungry
-  // SYNTAX: [<getter>, <setter>] = useState(<initialValue>)
-
-  // The useState React HOOK Returns a stateful value, and a function to update it
-  // SYNTAX: const [state, setState] = useState(initialState);
-  const [modalVisible, setModalVisible] = useState(false); // initial value is false
-  const [id, setId] = useState(""); //initial state is empty
+  // const [state, setState] = useState(initialState);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [price, setPrice] = useState("");
@@ -34,54 +20,37 @@ function ProductsScreen(props) {
   const [sellerPhone, setSellerPhone] = useState("");
   const [sellerEmail, setSellerEmail] = useState("");
   const [uploading, setUploading] = useState(false);
-
-  // Accessing the productList reducer from the initial state in the store
-  const productList = useSelector((state) => state.productList);
-  // destructuring loading, products, and error from productList
-  const { loading, products, error } = productList;
-
-  // Accessing the userSignin reducer from the initial state in the store
-  const userSignin = useSelector((state) => state.userSignin);
-  // Destructuring userInfo from userSignin
-  const { userInfo } = userSignin;
-
-  // Accessing the productSave reducer from the initial state in the store
-  const productSave = useSelector((state) => state.productSave);
-  // destructuring loading, success, and error from productSave. Renaming them
+  const productList = useSelector((state) => state.productList); // get productList from store
+  const { products } = productList; // get products from productList
+  const userSignin = useSelector((state) => state.userSignin); // get userSignin from state
+  const { userInfo } = userSignin; // Get userInfo from userSignin
+  const productSave = useSelector((state) => state.productSave); // Get productSave from store
+  // Get loading, success, and error from productSave. Rename
   const {
     loading: loadingSave,
     success: successSave,
     error: errorSave,
   } = productSave;
-
-  // Accessing the productDelete reducer from the initial state in the store
-  const productDelete = useSelector((state) => state.productDelete);
-  // destructuring loading, success, and error from productDelete. Renaming them
+  const productDelete = useSelector((state) => state.productDelete); // Get productDelete from state
+  // Get loading, success, error from productDelete. Rename
   const {
     loading: loadingDelete,
     success: successDelete,
     error: errorDelete,
   } = productDelete;
-
-  // To dispatch an action
   const dispatch = useDispatch();
 
-  // useEffect is like componentDidMount. It tells React that your component needs to do something after render
+  // useEffect like componentDidMount
   useEffect(() => {
-    // If successSave is true, close modal, and then refresh the data
     if (successSave) {
       setModalVisible(false); // Hide modal
     }
-    // dispatch the listProducts action
-    dispatch(listProducts());
-    return () => {
-      //
-    };
-  }, [successSave, successDelete]); // 'successSave' & 'successDelete' means rerun the above lines of code if successSave state changes. This array holds all the variables that have this ability. If there is a successSAve or successDelete, want to refresh the list again << It will make the PRODUCT_LIST_REQUEST and PRODUCT_LIST_SUCCESS again!
+    dispatch(listProducts()); // dispatch action
+    return () => {};
+  }, [successSave, successDelete]); // Change in input reruns above
 
-  // openModal function, takes product as a parameter
   const openModal = (product) => {
-    // we use the set methods for the product fields
+    // When modal open, set info
     setModalVisible(true);
     setId(product._id);
     setName(product.name);
@@ -92,12 +61,10 @@ function ProductsScreen(props) {
     setSellerEmail(product.sellerEmail);
   };
 
-  // submitHandler function
   const submitHandler = (e) => {
-    e.preventDefault(); // bc we not going to refresh screen
-    // dispatch the saveProduct action, pass id, name, image, price, description, sellerPhone, sellerEmail
+    e.preventDefault(); // don't refresh
+    // dispatch action
     dispatch(
-      // Set _id to id
       saveProduct({
         _id: id,
         name,
@@ -110,26 +77,17 @@ function ProductsScreen(props) {
     );
   };
 
-  // deleteHandler function. Takes product as parameter
   const deleteHandler = (product) => {
-    // dispatch the deleteProdcut action, pass the id of the product
-    dispatch(deleteProduct(product._id));
+    dispatch(deleteProduct(product._id)); // dispatch action
   };
 
-  // uploadFileHandler function
   const uploadFileHandler = (e) => {
-    // Store file in variable file
-    const file = e.target.files[0];
-    // Create a new FormData object
+    const file = e.target.files[0]; // get file
     const bodyFormData = new FormData();
-    // append a new file, set the file name to image
     bodyFormData.append("image", file);
-    // Set setUploading to true for the loading bar
-    setUploading(true);
-    // make POST request, body is bodyFormData
-    // To change from uploading images locally to S3, just changed /api/uploads to /api/uploads/s3
-    // Pass bodyFormData and headers
-    // When making a POST request, have to encode the data that forms the body of the request, we using the multipart/form-data method
+    setUploading(true); // show uploading text
+    // POST request, body is bodyFormData
+    // Upload local is /api/uploads. Upload to s3 is /api/uploads/s3
     axios
       .post("/api/uploads/s3", bodyFormData, {
         headers: {
@@ -137,10 +95,8 @@ function ProductsScreen(props) {
         },
       })
       .then((response) => {
-        // Get address (response.data), pass it into setImage fuction (setter)
-        setImage(response.data);
-        // Get rid of uploading text
-        setUploading(false);
+        setImage(response.data); // got address, set to image
+        setUploading(false); // remove uploading text
       })
       .catch((err) => {
         console.log(err);
@@ -153,13 +109,11 @@ function ProductsScreen(props) {
     <div className="content content-margined">
       <div className="product-header">
         <h3>Products</h3>
-        {/* Need to call openModal like this with an empty object as the parameter */}
         <button className="button primary" onClick={() => openModal({})}>
           Create Product
         </button>
       </div>
 
-      {/* if modalVisible is true, then show the form, else don't even render it */}
       {modalVisible && (
         <div className="form">
           <form onSubmit={submitHandler}>
@@ -246,7 +200,7 @@ function ProductsScreen(props) {
               </li>
 
               <li>
-                {/* Back button just makes form for Creating Project dissapear */}
+                {/* Back button to hide form */}
                 <button
                   onClick={() => setModalVisible(false)}
                   type="button"
@@ -260,7 +214,7 @@ function ProductsScreen(props) {
         </div>
       )}
 
-      {/* Only if userInfo exists (meaning the user is logged in) can they see the whole list of all the products  */}
+      {/* Only if userInfo exists (user logged in) can they see the whole list of all products */}
       {userInfo ? (
         <div className="product-list">
           <table className="table">
@@ -274,8 +228,6 @@ function ProductsScreen(props) {
               </tr>
             </thead>
             <tbody>
-              {/* Need this key or else error*/}
-
               {products.map((product) => (
                 <tr key={product._id}>
                   <td>{product._id}</td>
@@ -284,8 +236,8 @@ function ProductsScreen(props) {
                   <td>{product.sellerPhone}</td>
                   <td>{product.sellerEmail}</td>
                   <td>
-                    {/* Edit just like Create Product, they both call openModal, only difference is Edit passes the product as parameter */}
-
+                    {/* Edit calls openModal like Create Product, difference is passes in product */}
+                    {/* Interate through products, edit and delete products will only show if phone numbers matches with the user who is logged in */}
                     {product.sellerPhone == userInfo.phone ? (
                       <>
                         <button
@@ -302,9 +254,7 @@ function ProductsScreen(props) {
                         </button>
                       </>
                     ) : (
-                      <>
-                        {/* Interate through products, edit and delete products will only show if phone numbers matches with the user who is logged in */}
-                      </>
+                      <></>
                     )}
                   </td>
                 </tr>

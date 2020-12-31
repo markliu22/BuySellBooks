@@ -9,19 +9,12 @@ import SigninScreen from "./screens/SigninScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ProductsScreen from "./screens/ProductsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Need to npm i those 3 things and have to include these 2 things in order to use font awesome icons
-import {
-  faUpload, // upload icon
-  faHeart, // heart icon
-  faUser, // user icon
-} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUpload, faHeart, faUser } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
-  // useSelector is a react-redux hook. It takes in a function argument that returns the part of the state that you want. We are taking the userSignin key from the initial state in the store
-  const userSignin = useSelector((state) => state.userSignin);
-  // state is an object(key-value pair). We taking the userInfo value from userSignin
-  const { userInfo } = userSignin;
+  const userSignin = useSelector((state) => state.userSignin); // Get userSignin state. useSelector react-redux hook returns the part of the state that you want
+  const { userInfo } = userSignin; // Get userInfo value from userSignin
 
   const openMenu = () => {
     document.querySelector(".sidebar").classList.add("open");
@@ -97,7 +90,7 @@ function App() {
           </div>
         </main>
 
-        <footer className="footer">All right reserved.</footer>
+        <footer className="footer">Mark Liu 2020.</footer>
       </div>
     </BrowserRouter>
   );

@@ -4,39 +4,27 @@ import { useSelector, useDispatch } from "react-redux";
 import { signin } from "../actions/userActions";
 
 function SigninScreen(props) {
-  // The useState React HOOK Returns a stateful value, and a function to update it
-  // SYNTAX: const [state, setState] = useState(initialState);
-  const [email, setEmail] = useState(""); //initial state is empty
-  const [password, setPassword] = useState(""); //initial state is empty
-
-  // Accessing the userSignin reducer from the initial state in the store
-  const userSignin = useSelector((state) => state.userSignin);
-
-  // Destrucutring loading, userInfo, and error from userSignin
-  const { loading, userInfo, error } = userSignin;
-
-  // To dispatch an action
+  // const [state, setState] = useState(initialState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const userSignin = useSelector((state) => state.userSignin); // get userSignin from state
+  const { loading, userInfo, error } = userSignin; // get loading, userInfo, and error from userSignin
   const dispatch = useDispatch();
 
-  // useEffect is like componentDidMount. It tells React that your component needs to do something after render
+  // useEffect like componentDidMount
   useEffect(() => {
-    // If userInfo exists, just redirect user to the homepage
+    // If userInfo exists, redirect user to homepage
     if (userInfo) {
       props.history.push("/");
     }
-    return () => {
-      //
-    };
-  }, [userInfo]); // 'userInfo' means rerun the above lines of code if userInfo state changes
+    return () => {};
+  }, [userInfo]); // Changes in userInfo reruns above
 
-  // submitHandler function
   const submitHandler = (e) => {
-    e.preventDefault(); // bc we not going to refresh screen
-    // dispatch the signin action, pass email and password
-    dispatch(signin(email, password));
+    e.preventDefault(); // Don't refresh
+    dispatch(signin(email, password)); // dispatch action
   };
 
-  // Return section has the sign in form
   return (
     <div className="form">
       <form onSubmit={submitHandler}>
@@ -73,7 +61,6 @@ function SigninScreen(props) {
           </li>
           <li>New to BuySellBooks?</li>
           <li>
-            {/* Before he just had this /register. If redirect is equal to the homepage, set link to register, else set to register redirect to redirect */}
             <Link to="/register" className="button secondary text-center">
               Create account
             </Link>
