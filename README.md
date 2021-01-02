@@ -1,6 +1,6 @@
 # BuySellBooks
 
-BuySellBooks is a fully functional online marketplace for students to buy and sell used textbooks built using React, Redux, Express, Node, MongoDB, Amazon S3, and JSON Web Tokens.
+BuySellBooks is a fully functional online marketplace for students to buy and sell used textbooks built using React, Express, Node, MongoDB, and Amazon S3.
 
 # Demo:
 
