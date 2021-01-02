@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import config from "./config";
 
-// Function to getToken, takes user as parameter
+// Returns token
 const getToken = (user) => {
-  // JWTs can be signed using a secret. First parameter is payload, second is secret key. Also can add an expiresIn: key but I chose not to
+  // Send user as payload & secret
   return jwt.sign(
     {
       _id: user._id,
@@ -15,40 +15,36 @@ const getToken = (user) => {
   );
 };
 
-// isAuth and isAdmin functions will check the token
+// Verify Token
 const isAuth = (req, res, next) => {
-  // Get the token from req.headers.authorization
+  // Get token from header
   const token = req.headers.authorization;
-  // If the token exists
+  // Token exists:
   if (token) {
-    // get rid of the barier part, only the token part
+    // Bearer Token: Bearer <access_token_here>
+    // Get token (second part)
     const onlyToken = token.slice(7, token.length);
-    // jwt.verify(token, secretOrPublicKey, [options, callback])
     jwt.verify(onlyToken, config.JWT_SECRET, (err, decode) => {
-      // If error
       if (err) {
         return res.status(401).send({ msg: "Invalid Token" });
       }
-      // At this point the token is correct, call next() for the next step
-      // Set to decode bc we want to save the decoded data to the user
+      // decode going to be the user info: username, email, etc
       req.user = decode;
       next();
       return;
     });
-  }
-  // Token does not exist:
-  else {
+  } else {
     return res.status(401).send({ msg: "Token not supplied." });
   }
 };
 
 // isAuth and isAdmin funtions will check the token
-const isAdmin = (req, res, next) => {
-  // console.log(req.user);
-  if (req.user && req.user.isAdmin) {
-    return next();
-  }
-  return res.status(401).send({ msg: "Admin Token not valid." });
-};
+// const isAdmin = (req, res, next) => {
+//   // console.log(req.user);
+//   if (req.user && req.user.isAdmin) {
+//     return next();
+//   }
+//   return res.status(401).send({ msg: "Admin Token not valid." });
+// };
 
 export { getToken, isAuth, isAdmin };

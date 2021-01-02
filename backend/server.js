@@ -21,17 +21,17 @@ const app = express();
 
 app.use(bodyParser.json());
 
-// Inside uploadRoute.js, the '/' is the same as '/api/uploads'. It's always going to be the same as the first parameter
+// Inside uploadRoute.js, the '/' is the same as '/api/uploads'. Always going to be the same as the first parameter
 app.use("/api/uploads", uploadRoute);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 
 // For production
-app.use("/uploads", express.static(path.join(__dirname, "/../uploads")));
-app.use(express.static(path.join(__dirname, "/../frontend/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
-});
+// app.use("/uploads", express.static(path.join(__dirname, "/../uploads")));
+// app.use(express.static(path.join(__dirname, "/../frontend/build")));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
+// });
 
 // listen on the PORT from config
 app.listen(config.PORT, () => {

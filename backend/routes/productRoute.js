@@ -1,4 +1,4 @@
-import { isAuth, isAdmin, getToken } from "../util";
+import { isAuth, getToken } from "../util";
 const express = require("express");
 const Product = require("../models/Product");
 
@@ -16,25 +16,22 @@ const router = express.Router();
 // Handle GET request on /api/products/
 router.get("/", async (req, res) => {
   // const category = req.query.category ? { category: req.query.category } : {}; // If req.query.category exists, set category to it, else jsut use an empty object
-  const category = { category: "textbooks" }; //  <<< CAN DO IT LIKE THE WAY ABOVE OR CAN ALSO DO IT THIS WAY (bc the only category is textbooks, all posting will have the category 'textbooks')
-  const searchKeyword = req.query.searchKeyword
-    ? // If req.query.searchKeyword exists, else just empty object
-      {
+  const category = { category: "textbooks" };
+  const searchKeyword = req.query.searchKeyword // If req.query.searchKeyword exists
+    ? {
         name: {
-          // $regex provides regular expression capabilities for pattern matching string in queries. SYNTAX: { <field>: { $regex: /pattern/, $options: '<options>' } }
-          // $options: "i" means case insensitivity to match upper and lower cases
           $regex: req.query.searchKeyword,
-          $options: "i",
+          $options: "i", // regex "i" = insensitivity to match upper and lower cases
         },
       }
     : {};
-  // Check if req.query.sortOrder exists, if so, check if it's by lowest, if so the sortOrder is going to be based on price and -1, else going to be based on price and 1, if req.query.sortOrder does not exists, going to be based on _id and -1
+  // If req.query.sortOrder exists, check by lowest or not
   const sortOrder = req.query.sortOrder
     ? req.query.sortOrder === "lowest"
       ? { price: -1 }
       : { price: 1 }
     : { _id: -1 };
-  // Pass in orderOrder for sort. Deconstruct category and searchKeyword
+  // Try finding products by keyword, sort, return
   const products = await Product.find({ ...category, ...searchKeyword }).sort(
     sortOrder
   );
@@ -45,7 +42,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   // Find product based on id from req
   const product = await Product.findOne({ _id: req.params.id });
-  // If product exists, res.send that product
+  // Send
   if (product) {
     res.send(product);
   } else {
@@ -54,10 +51,10 @@ router.get("/:id", async (req, res) => {
 });
 
 // Handle POST request on /api/products/
+// VERIFY TOKEN WITH isAuth MIDDLEWARE FUNCTION (util.js)
 router.post("/", isAuth, async (req, res) => {
   // Create product based on data from req
   const product = Product({
-    // fill in the Product info based on the info that comes from the client(req)
     name: req.body.name,
     image: req.body.image,
     price: req.body.price,
@@ -65,11 +62,10 @@ router.post("/", isAuth, async (req, res) => {
     sellerPhone: req.body.sellerPhone,
     sellerEmail: req.body.sellerEmail,
   });
-  // Save newSavedProduct
+  // Save
   const newSavedProduct = await product.save();
-  // console.log(newSavedProduct.category);
-  //if product exists, that means it's created correctly, send back data
   if (newSavedProduct) {
+    // Send back
     return res
       .status(201)
       .send({ message: "New Product Created", data: newSavedProduct });
@@ -77,12 +73,11 @@ router.post("/", isAuth, async (req, res) => {
   return res.status(500).send({ message: " Error in Creating Product." });
 });
 
-// Handle PUT request on /api/products/idHere
+// Handle PUT request on /api/products/id_of_product_here
+// VERIFY TOKEN WITH isAuth MIDDLEWARE FUNCTION (util.js)
 router.put("/:id", isAuth, async (req, res) => {
-  // set productId to id from req
   const productId = req.params.id;
-  // Find product by its id (from request)
-  const product = await Product.findById(productId);
+  const product = await Product.findById(productId); // Find product by id
   // if product exists, update the product based on the data from req
   if (product) {
     product.name = req.body.name;
@@ -91,23 +86,24 @@ router.put("/:id", isAuth, async (req, res) => {
     product.description = req.body.description;
     product.sellerPhone = req.body.sellerPhone;
     product.sellerEmail = req.body.sellerEmail;
-    // Save product
+    // Save
     const updatedProduct = await product.save();
-    // If all ok, send updatedProduct back to the frontend
+    // Send back
     if (updatedProduct) {
-      return res
-        .status(200)
-        .send({ message: "Product Updated", data: updatedProduct });
+      return res.status(200).send({
+        message: "Product Updated Successfully",
+        data: updatedProduct,
+      });
     }
   }
   return res.status(500).send({ message: " Error in Updating Product." });
 });
 
 // Handle DELETE request on /api/products/idHere
+// VERIFY TOKEN WITH isAuth MIDDLEWARE FUNCTION (util.js)
 router.delete("/:id", isAuth, async (req, res) => {
-  // Find product by id (from req)
-  const deletedProduct = await Product.findById(req.params.id);
-  // If product exists, delete/remove it, send message
+  const deletedProduct = await Product.findById(req.params.id); // Find product by id
+  // Delete, send
   if (deletedProduct) {
     await deletedProduct.remove();
     res.send({ message: "Product Deleted" });
