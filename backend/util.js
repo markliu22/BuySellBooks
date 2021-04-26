@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "./config";
 
-// Returns token
+// Generates new token
 const getToken = (user) => {
   // Send user as payload & secret
   return jwt.sign(

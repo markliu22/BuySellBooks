@@ -72,7 +72,7 @@ const update = ({ userId, name, email, phone, password }) => async (
     type: USER_UPDATE_REQUEST,
     payload: { userId, name, email, phone, password },
   });
-  // POST request to /api/users/id_here, send name, email, phone, password to that endpoint
+  // PUT request to /api/users/id_here, send name, email, phone, password to that endpoint
   const { data } = await Axios.put(
     "/api/users/" + userId,
     { name, email, phone, password },
